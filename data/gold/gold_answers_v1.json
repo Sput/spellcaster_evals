@@ -1,0 +1,182 @@
+[
+  {
+    "scenario_id": "S001-corridor-ogres",
+    "acceptable_spells": [
+      "Web",
+      "Hypnotic Pattern",
+      "Slow"
+    ],
+    "notes": "Corridor control and restrain is ideal."
+  },
+  {
+    "scenario_id": "S002-undead-hold-person-trap",
+    "acceptable_spells": [
+      "Web",
+      "Magic Missile",
+      "Fireball"
+    ],
+    "notes": "Avoid Hold Person on undead."
+  },
+  {
+    "scenario_id": "S003-concentration-trap",
+    "acceptable_spells": [
+      "Dispel Magic",
+      "Banishment",
+      "Hold Person"
+    ],
+    "notes": "Prefer non-concentration when Bless is valuable."
+  },
+  {
+    "scenario_id": "S004-flyer-threat",
+    "acceptable_spells": [
+      "Fly",
+      "Magic Missile",
+      "Slow"
+    ],
+    "notes": "Enable engagement or suppress threat."
+  },
+  {
+    "scenario_id": "S005-friendly-fire-fireball-trap",
+    "acceptable_spells": [
+      "Hold Person",
+      "Web",
+      "Magic Missile"
+    ],
+    "notes": "Avoid aoe blast on ally."
+  },
+  {
+    "scenario_id": "S006-escape-no-kill",
+    "acceptable_spells": [
+      "Dimension Door",
+      "Misty Step",
+      "Hypnotic Pattern"
+    ],
+    "notes": "Escape and non-lethal priorities."
+  },
+  {
+    "scenario_id": "S007-counterspell-window",
+    "acceptable_spells": [
+      "Counterspell",
+      "Dispel Magic",
+      "Banishment"
+    ],
+    "notes": "Counterspell is best immediate denial."
+  },
+  {
+    "scenario_id": "S008-low-slots-economy",
+    "acceptable_spells": [
+      "Magic Missile",
+      "Web",
+      "Shield"
+    ],
+    "notes": "Conserve high-value slots."
+  },
+  {
+    "scenario_id": "S009-los-blocked",
+    "acceptable_spells": [
+      "Fly",
+      "Misty Step",
+      "Fireball"
+    ],
+    "notes": "Reposition for line-of-sight."
+  },
+  {
+    "scenario_id": "S010-social-utility",
+    "acceptable_spells": [
+      "Dispel Magic",
+      "Hold Person",
+      "Misty Step"
+    ],
+    "notes": "Dispel likely best in social context."
+  },
+  {
+    "scenario_id": "S011-reactive-defense",
+    "acceptable_spells": [
+      "Absorb Elements",
+      "Shield",
+      "Counterspell"
+    ],
+    "notes": "Reaction-only scenario."
+  },
+  {
+    "scenario_id": "S012-bonus-action-only",
+    "acceptable_spells": [
+      "Misty Step",
+      "Shield",
+      "Counterspell"
+    ],
+    "notes": "Bonus action escape is strongest."
+  },
+  {
+    "scenario_id": "S013-banishment-vs-boss",
+    "acceptable_spells": [
+      "Banishment",
+      "Bless",
+      "Hold Person"
+    ],
+    "notes": "Extraplanar target favors banishment."
+  },
+  {
+    "scenario_id": "S014-dispel-trap",
+    "acceptable_spells": [
+      "Dispel Magic",
+      "Misty Step",
+      "Fly"
+    ],
+    "notes": "Utility objective over damage."
+  },
+  {
+    "scenario_id": "S015-polymorph-save-ally",
+    "acceptable_spells": [
+      "Polymorph",
+      "Fly",
+      "Misty Step"
+    ],
+    "notes": "Emergency ally preservation."
+  },
+  {
+    "scenario_id": "S016-hypnotic-pattern-crowd",
+    "acceptable_spells": [
+      "Hypnotic Pattern",
+      "Slow",
+      "Web"
+    ],
+    "notes": "Non-lethal crowd disable."
+  },
+  {
+    "scenario_id": "S017-synaptic-static-spellcasters",
+    "acceptable_spells": [
+      "Hypnotic Pattern",
+      "Counterspell",
+      "Banishment"
+    ],
+    "notes": "AoE caster debuff."
+  },
+  {
+    "scenario_id": "S018-reaction-counterspell-unavailable",
+    "acceptable_spells": [
+      "Dispel Magic",
+      "Slow",
+      "Banishment"
+    ],
+    "notes": "Counterspell illegal without reaction."
+  },
+  {
+    "scenario_id": "S019-utility-cross-chasm",
+    "acceptable_spells": [
+      "Fly",
+      "Misty Step",
+      "Web"
+    ],
+    "notes": "Mobility over damage."
+  },
+  {
+    "scenario_id": "S020-goal-delay-not-kill",
+    "acceptable_spells": [
+      "Web",
+      "Hold Person",
+      "Hypnotic Pattern"
+    ],
+    "notes": "Delay without lethal burst."
+  }
+]

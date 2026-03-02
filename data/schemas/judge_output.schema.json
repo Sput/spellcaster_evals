@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JudgeOutput",
+  "type": "object",
+  "required": [
+    "winner",
+    "margin",
+    "scores",
+    "assumption_penalty",
+    "rationale"
+  ],
+  "properties": {
+    "winner": {
+      "type": "string",
+      "enum": ["baseline", "candidate", "tie"]
+    },
+    "margin": {"type": "number", "minimum": 0, "maximum": 5},
+    "scores": {
+      "type": "object",
+      "required": ["baseline", "candidate"],
+      "properties": {
+        "baseline": {"$ref": "#/definitions/score_block"},
+        "candidate": {"$ref": "#/definitions/score_block"}
+      }
+    },
+    "assumption_penalty": {
+      "type": "object",
+      "required": ["applied_to", "amount", "reason"],
+      "properties": {
+        "applied_to": {
+          "type": "string",
+          "enum": ["baseline", "candidate", "none"]
+        },
+        "amount": {"type": "number", "minimum": 0, "maximum": 5},
+        "reason": {"type": "string"}
+      }
+    },
+    "rationale": {"type": "string"}
+  },
+  "definitions": {
+    "score_block": {
+      "type": "object",
+      "required": [
+        "tactical_fit",
+        "efficiency",
+        "risk",
+        "rules_soundness",
+        "weighted_total"
+      ],
+      "properties": {
+        "tactical_fit": {"type": "number", "minimum": 0, "maximum": 5},
+        "efficiency": {"type": "number", "minimum": 0, "maximum": 5},
+        "risk": {"type": "number", "minimum": 0, "maximum": 5},
+        "rules_soundness": {"type": "number", "minimum": 0, "maximum": 5},
+        "weighted_total": {"type": "number", "minimum": 0, "maximum": 5}
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CandidateOutput",
+  "type": "object",
+  "required": [
+    "primary_spell",
+    "targeting",
+    "why_now",
+    "backup_spells",
+    "rules_assumptions"
+  ],
+  "properties": {
+    "primary_spell": {"type": "string"},
+    "targeting": {"type": "string"},
+    "why_now": {"type": "string"},
+    "backup_spells": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 3,
+      "items": {"type": "string"}
+    },
+    "rules_assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}

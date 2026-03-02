@@ -1,0 +1,1031 @@
+[
+  {
+    "id": "S001-corridor-ogres",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Web",
+      "Misty Step",
+      "Fireball",
+      "Shield",
+      "Magic Missile",
+      "Counterspell",
+      "Mirror Image",
+      "Hold Person"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true,
+      "movement_available_ft": 30
+    },
+    "situation_text": "Two ogres are 30 feet away in a 10-foot-wide corridor charging your backline.",
+    "goal": "Stop enemies from reaching allies.",
+    "constraints": [
+      "no friendly fire",
+      "preserve party hp"
+    ],
+    "environment": {
+      "terrain": "stone corridor",
+      "visibility": "clear",
+      "space": "tight"
+    },
+    "enemy_summary": {
+      "count": 2,
+      "types": [
+        "ogre"
+      ],
+      "distance_ft": 30,
+      "notable_traits": [
+        "melee bruiser"
+      ]
+    },
+    "tags": [
+      "combat",
+      "control",
+      "corridor"
+    ]
+  },
+  {
+    "id": "S002-undead-hold-person-trap",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Hold Person",
+      "Web",
+      "Fireball",
+      "Shield",
+      "Misty Step",
+      "Magic Missile"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 2,
+      "3": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": false,
+      "reaction_available": true
+    },
+    "situation_text": "Three ghouls close in at 20 feet while your fighter is engaged in melee.",
+    "goal": "Disable threats quickly without harming ally.",
+    "constraints": [
+      "no ally damage",
+      "enemy are undead"
+    ],
+    "environment": {
+      "terrain": "crypt",
+      "visibility": "dim",
+      "space": "medium"
+    },
+    "enemy_summary": {
+      "count": 3,
+      "types": [
+        "ghoul",
+        "undead"
+      ],
+      "distance_ft": 20,
+      "notable_traits": [
+        "undead",
+        "paralysis attacks"
+      ]
+    },
+    "tags": [
+      "combat",
+      "immunity-trap",
+      "friendly-fire"
+    ]
+  },
+  {
+    "id": "S003-concentration-trap",
+    "caster_profile": {
+      "class": "Cleric",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Bless",
+      "Hold Person",
+      "Dispel Magic",
+      "Banishment"
+    ],
+    "slots": {
+      "1": 3,
+      "2": 2,
+      "3": 2
+    },
+    "concentration_active": "Bless",
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Enemy cult fanatic starts casting from 50 feet behind cover while allies rely on your Bless.",
+    "goal": "Disrupt enemy spell plan without dropping current team buff.",
+    "constraints": [
+      "maintain Bless if possible"
+    ],
+    "environment": {
+      "terrain": "ruined chapel",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "humanoid caster"
+      ],
+      "distance_ft": 50,
+      "notable_traits": [
+        "spellcasting",
+        "partial cover"
+      ]
+    },
+    "tags": [
+      "combat",
+      "concentration-trap",
+      "anti-caster"
+    ]
+  },
+  {
+    "id": "S004-flyer-threat",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Fly",
+      "Fireball",
+      "Magic Missile",
+      "Slow",
+      "Counterspell"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": false
+    },
+    "situation_text": "A manticore circles 80 feet above and snipes your party in open terrain.",
+    "goal": "Reduce incoming ranged pressure and enable engagement.",
+    "constraints": [
+      "cannot reach flyer with melee currently"
+    ],
+    "environment": {
+      "terrain": "plains",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "manticore"
+      ],
+      "distance_ft": 80,
+      "notable_traits": [
+        "flying",
+        "ranged spikes"
+      ]
+    },
+    "tags": [
+      "combat",
+      "mobility",
+      "flyers"
+    ]
+  },
+  {
+    "id": "S005-friendly-fire-fireball-trap",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Fireball",
+      "Web",
+      "Misty Step",
+      "Hold Person",
+      "Magic Missile"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Two hobgoblins are locked in melee with your rogue at 15 feet.",
+    "goal": "Swing the fight while protecting the rogue.",
+    "constraints": [
+      "no friendly fire"
+    ],
+    "environment": {
+      "terrain": "courtyard",
+      "visibility": "clear",
+      "space": "tight"
+    },
+    "enemy_summary": {
+      "count": 2,
+      "types": [
+        "humanoid"
+      ],
+      "distance_ft": 15,
+      "notable_traits": [
+        "martial",
+        "adjacent to ally"
+      ]
+    },
+    "tags": [
+      "combat",
+      "friendly-fire",
+      "goal-safety"
+    ]
+  },
+  {
+    "id": "S006-escape-no-kill",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Dimension Door",
+      "Misty Step",
+      "Web",
+      "Hypnotic Pattern",
+      "Fly"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Guards are closing in after a heist; your party must exit without killing anyone.",
+    "goal": "Escape safely and non-lethally.",
+    "constraints": [
+      "no kills",
+      "avoid collateral damage"
+    ],
+    "environment": {
+      "terrain": "city alleys",
+      "visibility": "clear",
+      "space": "mixed"
+    },
+    "enemy_summary": {
+      "count": 6,
+      "types": [
+        "guard"
+      ],
+      "distance_ft": 30,
+      "notable_traits": [
+        "humanoid",
+        "organized"
+      ]
+    },
+    "tags": [
+      "combat",
+      "escape",
+      "goal-mismatch"
+    ]
+  },
+  {
+    "id": "S007-counterspell-window",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 9
+    },
+    "known_or_prepared_spells": [
+      "Counterspell",
+      "Dispel Magic",
+      "Slow",
+      "Shield",
+      "Banishment"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": false,
+      "reaction_available": true
+    },
+    "situation_text": "Enemy mage begins casting a high-impact spell within 60 feet.",
+    "goal": "Prevent spell resolution this round.",
+    "constraints": [
+      "reaction available now"
+    ],
+    "environment": {
+      "terrain": "throne hall",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "humanoid caster"
+      ],
+      "distance_ft": 55,
+      "notable_traits": [
+        "spellcasting"
+      ]
+    },
+    "tags": [
+      "combat",
+      "reaction",
+      "anti-caster"
+    ]
+  },
+  {
+    "id": "S008-low-slots-economy",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Magic Missile",
+      "Web",
+      "Misty Step",
+      "Shield"
+    ],
+    "slots": {
+      "1": 2,
+      "2": 1,
+      "3": 0
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "A single wounded bugbear threatens your backline at 25 feet; more encounters likely today.",
+    "goal": "Win safely while conserving resources.",
+    "constraints": [
+      "slot economy matters",
+      "avoid overspending"
+    ],
+    "environment": {
+      "terrain": "forest trail",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "bugbear"
+      ],
+      "distance_ft": 25,
+      "notable_traits": [
+        "low hp"
+      ]
+    },
+    "tags": [
+      "combat",
+      "efficiency"
+    ]
+  },
+  {
+    "id": "S009-los-blocked",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Fireball",
+      "Hypnotic Pattern",
+      "Misty Step",
+      "Fly"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Enemy archers are behind total cover on a ledge; you only know rough position.",
+    "goal": "Break enemy positional advantage.",
+    "constraints": [
+      "line of sight is limited"
+    ],
+    "environment": {
+      "terrain": "canyon",
+      "visibility": "obscured",
+      "space": "open",
+      "hazards": [
+        "height differences"
+      ]
+    },
+    "enemy_summary": {
+      "count": 4,
+      "types": [
+        "archer"
+      ],
+      "distance_ft": 90,
+      "notable_traits": [
+        "total cover"
+      ]
+    },
+    "tags": [
+      "combat",
+      "line-of-sight",
+      "positioning"
+    ]
+  },
+  {
+    "id": "S010-social-utility",
+    "caster_profile": {
+      "class": "Bard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Hold Person",
+      "Dispel Magic",
+      "Misty Step"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": false
+    },
+    "situation_text": "A noble under charm effect is about to sign away city rights during negotiation.",
+    "goal": "End magical coercion without escalating conflict.",
+    "constraints": [
+      "no violence",
+      "public setting"
+    ],
+    "environment": {
+      "terrain": "council chamber",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "enchanted humanoid"
+      ],
+      "distance_ft": 20,
+      "notable_traits": [
+        "social stakes"
+      ]
+    },
+    "tags": [
+      "social",
+      "utility",
+      "non-combat"
+    ]
+  },
+  {
+    "id": "S011-reactive-defense",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Shield",
+      "Absorb Elements",
+      "Magic Missile",
+      "Mirror Image"
+    ],
+    "slots": {
+      "1": 3,
+      "2": 2,
+      "3": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": false,
+      "bonus_action_available": false,
+      "reaction_available": true
+    },
+    "situation_text": "An enemy mage hits you with lightning bolt during their turn.",
+    "goal": "Mitigate immediate incoming damage.",
+    "constraints": [
+      "only reaction available"
+    ],
+    "environment": {
+      "terrain": "tower room",
+      "visibility": "clear",
+      "space": "tight"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "mage"
+      ],
+      "distance_ft": 40,
+      "notable_traits": [
+        "spell damage"
+      ]
+    },
+    "tags": [
+      "combat",
+      "reaction",
+      "defense"
+    ]
+  },
+  {
+    "id": "S012-bonus-action-only",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Misty Step",
+      "Shield",
+      "Counterspell",
+      "Web"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": "Web",
+    "action_economy": {
+      "action_available": false,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "You are grappled near a cliff edge and need repositioning immediately.",
+    "goal": "Escape danger this turn.",
+    "constraints": [
+      "action already spent",
+      "avoid dropping concentration if possible"
+    ],
+    "environment": {
+      "terrain": "cliff path",
+      "visibility": "clear",
+      "space": "narrow"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "ogre"
+      ],
+      "distance_ft": 5,
+      "notable_traits": [
+        "grappling"
+      ]
+    },
+    "tags": [
+      "combat",
+      "bonus-action",
+      "escape"
+    ]
+  },
+  {
+    "id": "S013-banishment-vs-boss",
+    "caster_profile": {
+      "class": "Cleric",
+      "level": 9
+    },
+    "known_or_prepared_spells": [
+      "Banishment",
+      "Bless",
+      "Dispel Magic",
+      "Hold Person"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "A summoned fiend commander appears and is overwhelming the frontline.",
+    "goal": "Temporarily remove highest threat.",
+    "constraints": [
+      "party needs breathing room"
+    ],
+    "environment": {
+      "terrain": "summoning chamber",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "fiend"
+      ],
+      "distance_ft": 40,
+      "notable_traits": [
+        "extraplanar"
+      ]
+    },
+    "tags": [
+      "combat",
+      "control",
+      "boss"
+    ]
+  },
+  {
+    "id": "S014-dispel-trap",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Dispel Magic",
+      "Fireball",
+      "Hypnotic Pattern",
+      "Counterspell"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Bridge is blocked by magical wall while enemies advance from behind.",
+    "goal": "Open path immediately.",
+    "constraints": [
+      "speed over damage"
+    ],
+    "environment": {
+      "terrain": "bridge",
+      "visibility": "clear",
+      "space": "narrow"
+    },
+    "enemy_summary": {
+      "count": 5,
+      "types": [
+        "soldier"
+      ],
+      "distance_ft": 40,
+      "notable_traits": [
+        "incoming pressure"
+      ]
+    },
+    "tags": [
+      "combat",
+      "utility",
+      "anti-magic"
+    ]
+  },
+  {
+    "id": "S015-polymorph-save-ally",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 8
+    },
+    "known_or_prepared_spells": [
+      "Polymorph",
+      "Fly",
+      "Fireball",
+      "Misty Step"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Your barbarian is at 3 HP and surrounded by enemies.",
+    "goal": "Keep ally alive through next round.",
+    "constraints": [
+      "stabilize ally quickly"
+    ],
+    "environment": {
+      "terrain": "battlefield",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 4,
+      "types": [
+        "orc"
+      ],
+      "distance_ft": 10,
+      "notable_traits": [
+        "focused on ally"
+      ]
+    },
+    "tags": [
+      "combat",
+      "support",
+      "survivability"
+    ]
+  },
+  {
+    "id": "S016-hypnotic-pattern-crowd",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 7
+    },
+    "known_or_prepared_spells": [
+      "Hypnotic Pattern",
+      "Fireball",
+      "Slow",
+      "Web"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 1
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": false,
+      "reaction_available": true
+    },
+    "situation_text": "Seven bandits clustered in a market are turning hostile.",
+    "goal": "End encounter quickly with minimal casualties.",
+    "constraints": [
+      "crowded civilian area"
+    ],
+    "environment": {
+      "terrain": "market",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 7,
+      "types": [
+        "humanoid"
+      ],
+      "distance_ft": 35,
+      "notable_traits": [
+        "clustered",
+        "morale shaky"
+      ]
+    },
+    "tags": [
+      "combat",
+      "crowd-control",
+      "non-lethal"
+    ]
+  },
+  {
+    "id": "S017-synaptic-static-spellcasters",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 10
+    },
+    "known_or_prepared_spells": [
+      "Hypnotic Pattern",
+      "Counterspell",
+      "Banishment",
+      "Fireball"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "Three enemy acolytes and one mage are grouped at 70 feet preparing spells.",
+    "goal": "Reduce enemy casting reliability immediately.",
+    "constraints": [
+      "prioritize debuffing casters"
+    ],
+    "environment": {
+      "terrain": "ritual site",
+      "visibility": "clear",
+      "space": "open"
+    },
+    "enemy_summary": {
+      "count": 4,
+      "types": [
+        "humanoid caster"
+      ],
+      "distance_ft": 70,
+      "notable_traits": [
+        "clustered",
+        "spellcasting"
+      ]
+    },
+    "tags": [
+      "combat",
+      "debuff",
+      "casters"
+    ]
+  },
+  {
+    "id": "S018-reaction-counterspell-unavailable",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 9
+    },
+    "known_or_prepared_spells": [
+      "Counterspell",
+      "Dispel Magic",
+      "Shield",
+      "Slow"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 1
+    },
+    "concentration_active": "Slow",
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": false
+    },
+    "situation_text": "Enemy sorcerer starts casting but you already spent your reaction this round.",
+    "goal": "Mitigate incoming magical threat now.",
+    "constraints": [
+      "no reaction available"
+    ],
+    "environment": {
+      "terrain": "arcane lab",
+      "visibility": "clear",
+      "space": "medium"
+    },
+    "enemy_summary": {
+      "count": 1,
+      "types": [
+        "sorcerer"
+      ],
+      "distance_ft": 55,
+      "notable_traits": [
+        "spellcasting"
+      ]
+    },
+    "tags": [
+      "combat",
+      "reaction-trap",
+      "anti-caster"
+    ]
+  },
+  {
+    "id": "S019-utility-cross-chasm",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 5
+    },
+    "known_or_prepared_spells": [
+      "Fly",
+      "Misty Step",
+      "Web",
+      "Magic Missile"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 2
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true,
+      "movement_available_ft": 20
+    },
+    "situation_text": "Party must cross a 40-foot chasm while harpies approach from far side.",
+    "goal": "Enable immediate traversal while minimizing exposure.",
+    "constraints": [
+      "time critical"
+    ],
+    "environment": {
+      "terrain": "chasm",
+      "visibility": "clear",
+      "space": "open",
+      "hazards": [
+        "falling"
+      ]
+    },
+    "enemy_summary": {
+      "count": 2,
+      "types": [
+        "harpy"
+      ],
+      "distance_ft": 80,
+      "notable_traits": [
+        "flying",
+        "luring song"
+      ]
+    },
+    "tags": [
+      "utility",
+      "mobility",
+      "hazard"
+    ]
+  },
+  {
+    "id": "S020-goal-delay-not-kill",
+    "caster_profile": {
+      "class": "Wizard",
+      "level": 6
+    },
+    "known_or_prepared_spells": [
+      "Web",
+      "Hold Person",
+      "Fireball",
+      "Misty Step",
+      "Mirror Image"
+    ],
+    "slots": {
+      "1": 4,
+      "2": 3,
+      "3": 3
+    },
+    "concentration_active": null,
+    "action_economy": {
+      "action_available": true,
+      "bonus_action_available": true,
+      "reaction_available": true
+    },
+    "situation_text": "City watch suspects your group; they are not lethal enemies and must be delayed for 2 rounds.",
+    "goal": "Delay pursuit without lethal harm.",
+    "constraints": [
+      "no lethal force",
+      "public street"
+    ],
+    "environment": {
+      "terrain": "city street",
+      "visibility": "clear",
+      "space": "tight"
+    },
+    "enemy_summary": {
+      "count": 4,
+      "types": [
+        "guard"
+      ],
+      "distance_ft": 25,
+      "notable_traits": [
+        "humanoid",
+        "law enforcement"
+      ]
+    },
+    "tags": [
+      "combat",
+      "non-lethal",
+      "goal-mismatch"
+    ]
+  }
+]

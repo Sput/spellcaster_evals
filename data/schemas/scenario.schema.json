@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scenario",
+  "type": "object",
+  "required": [
+    "id",
+    "caster_profile",
+    "known_or_prepared_spells",
+    "slots",
+    "concentration_active",
+    "action_economy",
+    "situation_text",
+    "goal",
+    "constraints",
+    "environment",
+    "enemy_summary",
+    "tags"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "caster_profile": {
+      "type": "object",
+      "required": ["class", "level"],
+      "properties": {
+        "class": {"type": "string"},
+        "level": {"type": "integer", "minimum": 1, "maximum": 20}
+      }
+    },
+    "known_or_prepared_spells": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "slots": {
+      "type": "object",
+      "patternProperties": {
+        "^[1-9]$": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "concentration_active": {
+      "type": ["string", "null"]
+    },
+    "action_economy": {
+      "type": "object",
+      "required": ["action_available", "bonus_action_available", "reaction_available"],
+      "properties": {
+        "action_available": {"type": "boolean"},
+        "bonus_action_available": {"type": "boolean"},
+        "reaction_available": {"type": "boolean"},
+        "movement_available_ft": {"type": "integer", "minimum": 0}
+      }
+    },
+    "situation_text": {"type": "string"},
+    "goal": {"type": "string"},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "environment": {
+      "type": "object",
+      "required": ["terrain", "visibility", "space"],
+      "properties": {
+        "terrain": {"type": "string"},
+        "visibility": {"type": "string"},
+        "space": {"type": "string"},
+        "hazards": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "enemy_summary": {
+      "type": "object",
+      "required": ["count", "types", "distance_ft"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "types": {"type": "array", "items": {"type": "string"}},
+        "distance_ft": {"type": "integer", "minimum": 0},
+        "notable_traits": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "tags": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
