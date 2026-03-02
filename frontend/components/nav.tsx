@@ -7,7 +7,7 @@ const links = [
   { href: "/run-eval", label: "Run Eval" },
   { href: "/compare-runs", label: "Compare Runs" },
   { href: "/dashboard", label: "Metrics Dashboard" },
-];
+] as const;
 
 export function AppNav() {
   const pathname = usePathname();
