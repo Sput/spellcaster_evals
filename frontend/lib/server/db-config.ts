@@ -27,6 +27,16 @@ function parseEnvFile(filePath: string): Record<string, string> {
   return out;
 }
 
+function getEnv(): Record<string, string> {
+  const fileEnv = parseEnvFile(ROOT_ENV_PATH);
+  return {
+    ...fileEnv,
+    ...(Object.fromEntries(
+      Object.entries(process.env).filter((entry): entry is [string, string] => typeof entry[1] === "string"),
+    )),
+  };
+}
+
 function isPgConnectionString(value: string | undefined): boolean {
   if (!value) return false;
   const v = value.toLowerCase();
@@ -34,7 +44,7 @@ function isPgConnectionString(value: string | undefined): boolean {
 }
 
 export function resolveDatabaseUrlFromRootEnv(): string {
-  const env = parseEnvFile(ROOT_ENV_PATH);
+  const env = getEnv();
   const candidates = [env.DATABASE_URL, env.SUPABASE_DB_URL];
 
   for (const candidate of candidates) {
@@ -55,7 +65,7 @@ export function resolveDatabaseTargetForHealth(): string {
 }
 
 export function resolveDbSslRejectUnauthorizedFromRootEnv(): boolean {
-  const env = parseEnvFile(ROOT_ENV_PATH);
+  const env = getEnv();
   const raw = (env.DB_SSL_REJECT_UNAUTHORIZED ?? "false").trim().toLowerCase();
   return ["1", "true", "yes", "y"].includes(raw);
 }

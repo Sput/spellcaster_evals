@@ -1,9 +1,6 @@
 import { Pool } from "pg";
 import { resolveDatabaseUrlFromRootEnv, resolveDbSslRejectUnauthorizedFromRootEnv } from "./db-config";
 
-const RAW_DATABASE_URL = resolveDatabaseUrlFromRootEnv();
-const DB_SSL_REJECT_UNAUTHORIZED = resolveDbSslRejectUnauthorizedFromRootEnv();
-
 function normalizeConnectionUrlForPg(raw: string): string {
   const u = new URL(raw);
   // We control TLS behavior explicitly via pool.ssl below.
@@ -12,20 +9,29 @@ function normalizeConnectionUrlForPg(raw: string): string {
   return u.toString();
 }
 
-const DATABASE_URL = normalizeConnectionUrlForPg(RAW_DATABASE_URL);
 const DB_REQUIRES_SSL = true;
+let pool: Pool | null = null;
 
-const pool = new Pool(
-  DB_REQUIRES_SSL
-    ? {
-        connectionString: DATABASE_URL,
-        ssl: { rejectUnauthorized: DB_SSL_REJECT_UNAUTHORIZED },
-      }
-    : { connectionString: DATABASE_URL },
-);
+function getPool(): Pool {
+  if (pool) return pool;
+
+  const rawDatabaseUrl = resolveDatabaseUrlFromRootEnv();
+  const dbSslRejectUnauthorized = resolveDbSslRejectUnauthorizedFromRootEnv();
+  const databaseUrl = normalizeConnectionUrlForPg(rawDatabaseUrl);
+
+  pool = new Pool(
+    DB_REQUIRES_SSL
+      ? {
+          connectionString: databaseUrl,
+          ssl: { rejectUnauthorized: dbSslRejectUnauthorized },
+        }
+      : { connectionString: databaseUrl },
+  );
+  return pool;
+}
 
 export async function createRun(run: Record<string, any>): Promise<void> {
-  await pool.query(
+  await getPool().query(
     `insert into eval_runs (
       id, name, status,
       baseline_model, baseline_prompt_version,
@@ -53,11 +59,11 @@ export async function createRun(run: Record<string, any>): Promise<void> {
 }
 
 export async function updateRunStatus(runId: string, status: string): Promise<void> {
-  await pool.query(`update eval_runs set status=$1 where id=$2`, [status, runId]);
+  await getPool().query(`update eval_runs set status=$1 where id=$2`, [status, runId]);
 }
 
 export async function markRunFailed(runId: string, reason: string): Promise<void> {
-  await pool.query(
+  await getPool().query(
     `update eval_runs
      set status='failed',
          metadata = coalesce(metadata, '{}'::jsonb) || jsonb_build_object('failure_reason', $1::text)
@@ -67,12 +73,12 @@ export async function markRunFailed(runId: string, reason: string): Promise<void
 }
 
 export async function getRun(runId: string): Promise<Record<string, any> | null> {
-  const { rows } = await pool.query(`select * from eval_runs where id=$1`, [runId]);
+  const { rows } = await getPool().query(`select * from eval_runs where id=$1`, [runId]);
   return rows[0] ?? null;
 }
 
 export async function listRuns(limit = 100): Promise<Record<string, any>[]> {
-  const { rows } = await pool.query(
+  const { rows } = await getPool().query(
     `select
        id,
        name,
@@ -90,7 +96,7 @@ export async function listRuns(limit = 100): Promise<Record<string, any>[]> {
 }
 
 export async function insertSample(sample: Record<string, any>): Promise<void> {
-  await pool.query(
+  await getPool().query(
     `insert into eval_run_samples (
       id, run_id, scenario_id, scenario,
       baseline_output, candidate_output,
@@ -126,7 +132,7 @@ export async function insertSample(sample: Record<string, any>): Promise<void> {
 }
 
 export async function insertJudgement(j: Record<string, any>): Promise<void> {
-  await pool.query(
+  await getPool().query(
     `insert into eval_judgements (
       id, sample_id, judge_index, winner, margin,
       scores, rationale, raw_response
@@ -138,7 +144,7 @@ export async function insertJudgement(j: Record<string, any>): Promise<void> {
 }
 
 export async function getSamplesForRun(runId: string): Promise<Record<string, any>[]> {
-  const { rows } = await pool.query(
+  const { rows } = await getPool().query(
     `select
        id,
        scenario_id,
@@ -157,7 +163,7 @@ export async function getSamplesForRun(runId: string): Promise<Record<string, an
 }
 
 export async function getMetrics(runId: string): Promise<Record<string, any>> {
-  const { rows } = await pool.query(
+  const { rows } = await getPool().query(
     `with base as (select * from eval_run_samples where run_id=$1)
      select
        count(*)::int as scenario_count,
