@@ -132,6 +132,7 @@ small {
 
 .app-nav {
   display: flex;
+  align-items: center;
   gap: 0.35rem;
   margin: 1rem 0 1.25rem;
   padding: 0.35rem;
@@ -142,6 +143,35 @@ small {
   max-width: 100%;
   overflow-x: auto;
   box-shadow: var(--shadow);
+}
+
+.app-nav__session {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.35rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.app-nav__session span {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-nav__button {
+  border-radius: 9px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  box-shadow: none;
+}
+
+.app-nav__link--auth {
+  margin-left: 0.35rem;
 }
 
 .app-nav__link {
@@ -179,6 +209,26 @@ small {
   font-weight: 700;
 }
 
+.auth-shell {
+  display: grid;
+  place-items: center;
+  min-height: 52vh;
+}
+
+.auth-card {
+  width: min(100%, 430px);
+}
+
+.auth-card p {
+  margin-top: 0;
+  color: var(--muted);
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
 @media (max-width: 720px) {
   main {
     padding: 1rem 0.75rem 2rem;
@@ -192,5 +242,18 @@ small {
   .app-nav__link {
     flex: 1 1 auto;
     text-align: center;
+  }
+
+  .app-nav__session {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+    padding: 0.35rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .app-nav__session span {
+    max-width: 58vw;
   }
 }

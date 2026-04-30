@@ -1,5 +1,9 @@
 import type { CandidateOutput, JudgeResult } from "./types";
 
+type Provider = "openai" | "anthropic";
+
+const REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? "60000");
+
 const CONCENTRATION_SPELLS = new Set([
   "Bless",
   "Web",
@@ -107,7 +111,242 @@ function scoreSpell(spell: string, scenario: Record<string, any>) {
   };
 }
 
-export function recommendSpell(
+function modelProvider(modelId: string): Provider {
+  return modelId.startsWith("claude-") ? "anthropic" : "openai";
+}
+
+function getProviderKey(provider: Provider): string | undefined {
+  return provider === "anthropic" ? process.env.ANTHROPIC_API_KEY : process.env.OPENAI_API_KEY;
+}
+
+function allowHeuristicFallback(): boolean {
+  return (process.env.LLM_ALLOW_HEURISTIC_FALLBACK ?? "true").toLowerCase() !== "false";
+}
+
+function extractJsonObject(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(text.slice(start, end + 1));
+    }
+    throw new Error("LLM response did not contain valid JSON");
+  }
+}
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string");
+}
+
+function normalizeCandidateOutput(value: unknown, scenario: Record<string, any>, role: "baseline" | "candidate"): CandidateOutput {
+  const input = value as Partial<CandidateOutput>;
+  const knownSpells = asStringArray(scenario.known_or_prepared_spells);
+  const primary =
+    typeof input.primary_spell === "string" && input.primary_spell.trim()
+      ? input.primary_spell.trim()
+      : (knownSpells[0] ?? "Magic Missile");
+
+  return {
+    primary_spell: primary,
+    targeting:
+      typeof input.targeting === "string" && input.targeting.trim()
+        ? input.targeting.trim()
+        : "Prioritize the highest-value legal target.",
+    why_now:
+      typeof input.why_now === "string" && input.why_now.trim()
+        ? input.why_now.trim()
+        : `${role} selected ${primary}.`,
+    backup_spells: asStringArray(input.backup_spells).slice(0, 3),
+    rules_assumptions: asStringArray(input.rules_assumptions),
+  };
+}
+
+function clampScore(value: unknown): number {
+  const num = Number(value);
+  return Number.isFinite(num) ? clamp01to5(num) : 0;
+}
+
+function normalizeScore(value: unknown) {
+  const input = value as Record<string, unknown>;
+  const tacticalFit = clampScore(input.tactical_fit);
+  const efficiency = clampScore(input.efficiency);
+  const risk = clampScore(input.risk);
+  const rulesSoundness = clampScore(input.rules_soundness);
+  const weightedTotal =
+    Number.isFinite(Number(input.weighted_total))
+      ? clampScore(input.weighted_total)
+      : clamp01to5(tacticalFit * 0.35 + efficiency * 0.25 + risk * 0.2 + rulesSoundness * 0.2);
+
+  return {
+    tactical_fit: tacticalFit,
+    efficiency,
+    risk,
+    rules_soundness: rulesSoundness,
+    weighted_total: weightedTotal,
+  };
+}
+
+function normalizeJudgeResult(value: unknown, marginThreshold: number): JudgeResult {
+  const input = value as Record<string, any>;
+  const baseline = normalizeScore(input.scores?.baseline);
+  const candidate = normalizeScore(input.scores?.candidate);
+  const computedMargin = Math.round(Math.abs(candidate.weighted_total - baseline.weighted_total) * 100) / 100;
+  const margin = Number.isFinite(Number(input.margin)) ? Math.round(Number(input.margin) * 100) / 100 : computedMargin;
+  const rawWinner = input.winner;
+  const winner =
+    rawWinner === "baseline" || rawWinner === "candidate" || rawWinner === "tie"
+      ? rawWinner
+      : margin >= marginThreshold
+        ? candidate.weighted_total > baseline.weighted_total
+          ? "candidate"
+          : "baseline"
+        : "tie";
+
+  return {
+    winner,
+    margin,
+    scores: { baseline, candidate },
+    assumption_penalty: {
+      applied_to:
+        input.assumption_penalty?.applied_to === "baseline" ||
+        input.assumption_penalty?.applied_to === "candidate" ||
+        input.assumption_penalty?.applied_to === "none"
+          ? input.assumption_penalty.applied_to
+          : "none",
+      amount: Number.isFinite(Number(input.assumption_penalty?.amount)) ? Number(input.assumption_penalty.amount) : 0,
+      reason:
+        typeof input.assumption_penalty?.reason === "string" ? input.assumption_penalty.reason : "none",
+    },
+    rationale: typeof input.rationale === "string" && input.rationale.trim() ? input.rationale.trim() : "No rationale provided.",
+  };
+}
+
+async function postWithTimeout(url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function callOpenAiJson(modelId: string, system: string, user: string): Promise<unknown> {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error("OPENAI_API_KEY is not set");
+
+  const response = await postWithTimeout("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: modelId,
+      input: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      text: {
+        format: { type: "json_object" },
+      },
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.error?.message ?? `OpenAI request failed with ${response.status}`);
+  }
+
+  const outputText =
+    typeof data.output_text === "string"
+      ? data.output_text
+      : data.output
+          ?.flatMap((item: any) => item.content ?? [])
+          .map((item: any) => item.text ?? "")
+          .join("");
+
+  if (!outputText) throw new Error("OpenAI response did not include output text");
+  return extractJsonObject(outputText);
+}
+
+async function callAnthropicJson(modelId: string, system: string, user: string): Promise<unknown> {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
+
+  const response = await postWithTimeout("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: modelId,
+      max_tokens: 1200,
+      temperature: 0.2,
+      system,
+      messages: [{ role: "user", content: user }],
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.error?.message ?? `Anthropic request failed with ${response.status}`);
+  }
+
+  const outputText = data.content?.map((item: any) => item.type === "text" ? item.text : "").join("");
+  if (!outputText) throw new Error("Anthropic response did not include output text");
+  return extractJsonObject(outputText);
+}
+
+async function callModelJson(modelId: string, system: string, user: string): Promise<unknown> {
+  const provider = modelProvider(modelId);
+  return provider === "anthropic"
+    ? callAnthropicJson(modelId, system, user)
+    : callOpenAiJson(modelId, system, user);
+}
+
+function fallbackCandidate(
+  scenario: Record<string, any>,
+  role: "baseline" | "candidate",
+  modelId: string,
+  reason: string,
+): CandidateOutput {
+  const output = heuristicRecommendSpell(scenario, role, modelId);
+  return {
+    ...output,
+    why_now: `${output.why_now} Heuristic fallback used: ${reason}.`,
+  };
+}
+
+function fallbackJudge(
+  scenario: Record<string, any>,
+  baselineOutput: CandidateOutput,
+  candidateOutput: CandidateOutput,
+  marginThreshold: number,
+  modelId: string,
+  reason: string,
+): JudgeResult {
+  const output = heuristicJudgePairwise(scenario, baselineOutput, candidateOutput, marginThreshold, modelId);
+  return {
+    ...output,
+    rationale: `${output.rationale} Heuristic fallback used: ${reason}.`,
+  };
+}
+
+function handleProviderError<T>(operation: () => T, reason: string): T {
+  if (!allowHeuristicFallback()) {
+    throw new Error(reason);
+  }
+  return operation();
+}
+
+function heuristicRecommendSpell(
   scenario: Record<string, any>,
   role: "baseline" | "candidate",
   _modelId: string,
@@ -136,7 +375,7 @@ export function recommendSpell(
   };
 }
 
-export function judgePairwise(
+function heuristicJudgePairwise(
   scenario: Record<string, any>,
   baselineOutput: CandidateOutput,
   candidateOutput: CandidateOutput,
@@ -174,4 +413,116 @@ export function judgePairwise(
     assumption_penalty: { applied_to: "none", amount: 0, reason: "none" },
     rationale: `Heuristic rubric judge: baseline=${baselineOutput.primary_spell} (${baseline.weighted_total.toFixed(2)}), candidate=${candidateOutput.primary_spell} (${candidate.weighted_total.toFixed(2)}).`,
   };
+}
+
+export async function recommendSpell(
+  scenario: Record<string, any>,
+  role: "baseline" | "candidate",
+  modelId: string,
+): Promise<CandidateOutput> {
+  const provider = modelProvider(modelId);
+  const providerKey = getProviderKey(provider);
+  if (!providerKey) {
+    return handleProviderError(
+      () => fallbackCandidate(scenario, role, modelId, `${provider.toUpperCase()} API key is not set`),
+      `${provider.toUpperCase()} API key is not set`,
+    );
+  }
+
+  const system = [
+    "You are a Dungeons & Dragons 5e tactical spell recommendation engine.",
+    "Choose one spell for the given scenario and return only valid JSON.",
+    "Use only spells from known_or_prepared_spells.",
+    "Do not invent spells, targets, or scenario facts.",
+  ].join(" ");
+  const user = JSON.stringify({
+    task: "Recommend the best legal spell choice.",
+    role,
+    response_shape: {
+      primary_spell: "string",
+      targeting: "string",
+      why_now: "string",
+      backup_spells: ["string"],
+      rules_assumptions: ["string"],
+    },
+    scenario,
+  });
+
+  try {
+    const data = await callModelJson(modelId, system, user);
+    return normalizeCandidateOutput(data, scenario, role);
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    return handleProviderError(
+      () => fallbackCandidate(scenario, role, modelId, reason),
+      reason,
+    );
+  }
+}
+
+export async function judgePairwise(
+  scenario: Record<string, any>,
+  baselineOutput: CandidateOutput,
+  candidateOutput: CandidateOutput,
+  marginThreshold: number,
+  modelId: string,
+): Promise<JudgeResult> {
+  const provider = modelProvider(modelId);
+  const providerKey = getProviderKey(provider);
+  if (!providerKey) {
+    return handleProviderError(
+      () => fallbackJudge(scenario, baselineOutput, candidateOutput, marginThreshold, modelId, `${provider.toUpperCase()} API key is not set`),
+      `${provider.toUpperCase()} API key is not set`,
+    );
+  }
+
+  const system = [
+    "You are an impartial Dungeons & Dragons 5e pairwise spell-choice judge.",
+    "Evaluate baseline and candidate against tactical fit, resource efficiency, risk, and rules soundness.",
+    "Return only valid JSON. Scores must be numbers from 0 to 5.",
+  ].join(" ");
+  const user = JSON.stringify({
+    task: "Judge which output is better for this scenario.",
+    margin_threshold: marginThreshold,
+    response_shape: {
+      winner: "baseline | candidate | tie",
+      margin: "number",
+      scores: {
+        baseline: {
+          tactical_fit: "number",
+          efficiency: "number",
+          risk: "number",
+          rules_soundness: "number",
+          weighted_total: "number",
+        },
+        candidate: {
+          tactical_fit: "number",
+          efficiency: "number",
+          risk: "number",
+          rules_soundness: "number",
+          weighted_total: "number",
+        },
+      },
+      assumption_penalty: {
+        applied_to: "baseline | candidate | none",
+        amount: "number",
+        reason: "string",
+      },
+      rationale: "string",
+    },
+    scenario,
+    baseline_output: baselineOutput,
+    candidate_output: candidateOutput,
+  });
+
+  try {
+    const data = await callModelJson(modelId, system, user);
+    return normalizeJudgeResult(data, marginThreshold);
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    return handleProviderError(
+      () => fallbackJudge(scenario, baselineOutput, candidateOutput, marginThreshold, modelId, reason),
+      reason,
+    );
+  }
 }

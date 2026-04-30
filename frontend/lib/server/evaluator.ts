@@ -32,8 +32,8 @@ export async function executeRun(opts: {
     for (const scenario of scenarios) {
       const sampleId = crypto.randomUUID();
 
-      const baselineOutput = recommendSpell(scenario, "baseline", opts.baselineModel);
-      const candidateOutput = recommendSpell(scenario, "candidate", opts.candidateModel);
+      const baselineOutput = await recommendSpell(scenario, "baseline", opts.baselineModel);
+      const candidateOutput = await recommendSpell(scenario, "candidate", opts.candidateModel);
 
       const baselineCheck = validateLegality(scenario, baselineOutput, spellCatalog);
       const candidateCheck = validateLegality(scenario, candidateOutput, spellCatalog);
@@ -69,7 +69,13 @@ export async function executeRun(opts: {
 
       const judgeResults = [];
       for (let i = 1; i <= 3; i += 1) {
-        const result = judgePairwise(scenario, baselineOutput, candidateOutput, opts.marginThreshold, opts.judgeModel);
+        const result = await judgePairwise(
+          scenario,
+          baselineOutput,
+          candidateOutput,
+          opts.marginThreshold,
+          opts.judgeModel,
+        );
         judgeResults.push(result);
       }
 

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AuthButton } from "@/components/auth-button";
 
 const links = [
   { href: "/run-eval", label: "Run Eval" },
@@ -27,6 +28,7 @@ export function AppNav() {
           </Link>
         );
       })}
+      <AuthButton />
     </nav>
   );
 }
