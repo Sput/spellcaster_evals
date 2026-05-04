@@ -1,21 +1,11 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import type { Route } from "next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
-
-function getLocalRedirect(path: string): Route {
-  if (!path.startsWith("/") || path.startsWith("//")) {
-    return "/run-eval";
-  }
-  return path as Route;
-}
 
 export function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = getLocalRedirect(searchParams.get("redirectTo") || "/run-eval");
   const [{ supabase, configError }] = useState(() => {
     try {
       return { supabase: createClient(), configError: "" };
@@ -30,6 +20,11 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+  }, []);
 
   async function handleSignIn(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,18 +45,18 @@ export function LoginForm() {
       return;
     }
 
-    router.replace(redirectTo);
+    router.replace("/run-eval");
     router.refresh();
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSignIn}>
+    <form className="auth-form" autoComplete="off" onSubmit={handleSignIn}>
       <div>
         <label htmlFor="email">Email</label>
         <input
           id="email"
           type="email"
-          autoComplete="email"
+          autoComplete="off"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
@@ -72,7 +67,7 @@ export function LoginForm() {
         <input
           id="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required

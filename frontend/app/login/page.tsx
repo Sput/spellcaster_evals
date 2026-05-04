@@ -6,7 +6,9 @@ export default function LoginPage() {
     <section className="auth-shell">
       <div className="card auth-card">
         <h2>Sign in</h2>
-        <p>Use your Supabase account credentials to access the eval lab.</p>
+        <p>
+          For login credentials, please email me at paulknick at gmail dot com.
+        </p>
         <Suspense>
           <LoginForm />
         </Suspense>
